@@ -59,6 +59,8 @@ services:
     image: grafana/grafana:latest
     ports:
       - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
     networks:
       - monitoring
 
@@ -89,6 +91,7 @@ services:
 volumes:
   pgdata:
   redis-data:
+  grafana-data:
 
 networks:
   monitoring:
