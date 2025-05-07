@@ -3,7 +3,7 @@ FROM golang:1.24 AS builder
 
 WORKDIR /app
 
-ENV GOPROXY=direct
+ENV GOPROXY=https://proxy.golang.org,direct
 
 COPY go.mod go.sum ./
 RUN go mod download
