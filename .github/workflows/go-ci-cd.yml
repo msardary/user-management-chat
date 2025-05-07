@@ -31,7 +31,7 @@ jobs:
         run: |
           cd /home/go/user-management-chat
           git pull origin main
-          curl -sSL https://github.com/kyleconroy/sqlc/releases/download/v1.16.0/sqlc_1.16.0_linux_amd64.tar.gz | tar -xz -C /usr/local/bin
+          curl -sSL https://github.com/sqlc-dev/sqlc/releases/download/v1.29.0/sqlc_1.29.0_linux_amd64.tar.gz | tar -xz -C /usr/local/bin
           sqlc generate --file internal/db/sqlc.yaml
           docker compose down
           docker compose up --build -d
