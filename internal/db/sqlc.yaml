@@ -1,0 +1,38 @@
+version: "2"
+sql:
+  - engine: "postgresql"
+    schema: "./migrations/schema.sql"
+    queries: "./queries/"
+    gen:
+      go:
+        package: "db"
+        out: "./generated"
+        sql_package: "pgx/v5"
+        overrides:
+          - column: "users.fname"
+            go_type:
+              type: string
+          - column: "users.lname"
+            go_type:
+              type: string
+          - column: "users.mobile_number"
+            go_type:
+              type: string
+          - column: "users.created_at"
+            go_type:
+              type: time.Time
+          - column: "users.updated_at"
+            go_type:
+              type: time.Time
+          - column: "messages.delivered"
+            go_type:
+              type: bool
+          - column: "messages.created_at"
+            go_type:
+              type: time.Time
+          - column: "refresh_tokens.created_at"
+            go_type:
+              type: time.Time
+          - column: "refresh_tokens.expires_at"
+            go_type:
+              type: time.Time

@@ -1,0 +1,62 @@
+# Binary files
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Coverage files
+*.coverprofile
+*.cov
+*.coverage
+coverage.*
+
+# Go workspace files
+go.work
+go.work.sum
+
+# Vendor directory (if you use go mod vendor)
+vendor/
+
+# Sqlc generated code (optional — keep if you commit generated code)
+internal/db/generated/
+
+# Migration binaries or temp files (if using golang-migrate or similar)
+*.db
+*.sql.tmp
+
+# Docker
+*.env
+.env.*
+.envrc
+docker-compose.override.yml
+
+# Log files
+*.log
+logs/
+
+# IDE/editor specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+bin/
+dist/
+
+# Air (live reload) config and temp files
+.tmp/
+.air/
+
+# Misc
+*.bak
+*.tmp
+*.old

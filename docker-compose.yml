@@ -1,0 +1,94 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: userm
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - monitoring
+
+  app:
+    build: .
+    depends_on:
+      - db
+      - redis
+    environment:
+      DATABASE_URL: postgres://postgres:123@db:5432/userm?sslmode=disable
+      JWT_ACCESS_SECRET: mysecret
+      JWT_REFRESH_SECRET: mysecretrefresh
+      PORT: 8080
+      LOG_PATH: /logs
+      REDIS_URL: redis:6379
+    ports:
+      - "8085:8080"
+    volumes:
+      - ./logs:/logs
+    networks:
+      - monitoring
+
+  redis:
+    image: redis:latest
+    restart: always
+    container_name: user-management-redis
+    ports:
+      - "6389:6379"
+    volumes:
+      - redis-data:/data
+    entrypoint: redis-server --appendonly yes
+    networks:
+      - monitoring
+    
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - monitoring
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    networks:
+      - monitoring
+
+  promtail:
+    image: grafana/promtail:2.8.0
+    container_name: promtail
+    restart: unless-stopped
+    volumes:
+      - ./logs:/logs
+      - ./promtail-config.yaml:/etc/promtail/config.yaml
+    command: -config.file=/etc/promtail/config.yaml
+    depends_on:
+      - loki
+    networks:
+      - monitoring
+
+  loki:
+    image: grafana/loki:2.8.0
+    container_name: loki
+    restart: unless-stopped
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./loki-config.yaml:/etc/loki/loki-config.yaml
+    networks:
+      - monitoring
+
+volumes:
+  pgdata:
+  redis-data:
+
+networks:
+  monitoring:
