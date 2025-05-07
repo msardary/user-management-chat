@@ -8,7 +8,7 @@ import (
 )
 
 func SetupLogger() {
-	logDir := "logs"
+	logDir := "/logs"
 	logFile := logDir + "/app.log"
 
 	if _, err := os.Stat(logDir); os.IsNotExist(err) {
