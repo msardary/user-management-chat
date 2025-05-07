@@ -56,5 +56,6 @@ jobs:
           script: |
             cd /home/go/user-management-chat
             git pull origin main
+            sqlc generate --file internal/db/sqlc.yaml
             docker compose down
             docker compose up --build -d
