@@ -13,34 +13,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Go
-        uses: actions/setup-go@v5
+      - name: Checkout Repository
+        uses: actions/checkout@v2
         with:
-          go-version: '1.24'
-
-      - name: Cache Go modules
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/go/pkg/mod
-            ~/.cache/go-build
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
-
-      - name: Install dependencies
-        run: go mod download
-
-      - name: Install sqlc
-        run: |
-          curl -sSL https://github.com/kyleconroy/sqlc/releases/download/v1.16.0/sqlc_1.16.0_linux_amd64.tar.gz | tar -xz -C /usr/local/bin
-
-      - name: Run sqlc generate
-        run: |
-          sqlc generate --file internal/db/sqlc.yaml
+          fetch-depth: 0
 
   deploy:
     runs-on: self-hosted
