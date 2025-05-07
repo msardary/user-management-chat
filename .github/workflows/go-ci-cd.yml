@@ -59,3 +59,8 @@ jobs:
             sqlc generate --file internal/db/sqlc.yaml
             docker compose down
             docker compose up --build -d
+          port: 22
+          timeout: 30s
+          command_timeout: 10m
+          INPUT_DEBUG: true
+          INPUT_REQUEST_PTY: true
