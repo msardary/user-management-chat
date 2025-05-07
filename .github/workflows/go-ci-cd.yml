@@ -43,24 +43,18 @@ jobs:
           sqlc generate --file internal/db/sqlc.yaml
 
   deploy:
-    runs-on: ubuntu-latest
-    needs: build
-
+    runs-on: self-hosted
+    needs: setup
     steps:
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1.0.3
+      - name: Checkout Repository
+        uses: actions/checkout@v2
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd /home/go/user-management-chat
-            git pull origin main
-            sqlc generate --file internal/db/sqlc.yaml
-            docker compose down
-            docker compose up --build -d
-          port: 22
-          timeout: 30s
-          command_timeout: 5m
-          debug: true
-          request_pty: true
+          fetch-depth: 0
+
+      - name: Build and Run Docker Compose
+        run: |
+          cd /home/go/user-management-chat
+          git pull origin main
+          sqlc generate --file internal/db/sqlc.yaml
+          docker compose down
+          docker compose up --build -d
