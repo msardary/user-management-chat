@@ -7,7 +7,6 @@ import (
 	"user-management/internal/config"
 
 	"github.com/jackc/pgx/v5/pgxpool"
-	_ "github.com/lib/pq"
 )
 
 var pool *pgxpool.Pool
