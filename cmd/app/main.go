@@ -1,3 +1,11 @@
+// @title User Management API
+// @version 1.0
+// @description This is a user management service and chat
+// @host localhost:8080
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+
 package main
 
 import (

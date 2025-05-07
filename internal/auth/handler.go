@@ -19,17 +19,21 @@ type RefreshTokenStruct struct {
 	ExpiresAt time.Time `json:"expires_at"`
 }
 
+// RegisterHandler
+// @Summary Register a new user
+// @Description Register a new user by providing username, email, and password.
+// @Tags Authentication
+// @Accept json
+// @Produce json
+// @Param data body RegisterPayload true "User registration data"
+// @Success 201 {object} response.APIResponse
+// @Failure 400 {object} response.APIResponse "Validation errors"
+// @Failure 500 {object} response.APIResponse "Internal server error"
+// @Router /api/v1/register [post]
 func RegisterHandler(service *Service) gin.HandlerFunc {
 
 	return func(c *gin.Context) {
-		var payload struct {
-			Username	string `validate:"required" json:"username"`
-			Email    	string `validate:"required,email" json:"email"`
-			Password 	string `validate:"required" json:"password"`
-			FirstName 	*string `json:"first_name"`
-			LastName 	*string `json:"last_name"`
-			Mobile 		*string `json:"mobile_number"`
-		}
+		var payload RegisterPayload
 
 		if err := c.ShouldBindJSON(&payload); err != nil {
 			response.Error(c, http.StatusBadRequest, "Invalid request payload")
@@ -55,13 +59,22 @@ func RegisterHandler(service *Service) gin.HandlerFunc {
 
 }
 
+// LoginHandler
+// @Summary User login
+// @Description Login using username and password
+// @Tags Authentication
+// @Accept json
+// @Produce json
+// @Param data body LoginPayload true "User login data"
+// @Success 200 {object} response.APIResponse
+// @Failure 400 {object} response.APIResponse "Invalid input"
+// @Failure 401 {object} response.APIResponse "Unauthorized"
+// @Failure 500 {object} response.APIResponse "Internal server error"
+// @Router /api/v1/login [post]
 func LoginHandler(service *Service) gin.HandlerFunc {
 
 	return func(c *gin.Context) {
-		var req struct {
-			Username    string `json:"username"`
-			Password 	string `json:"password"`
-		}
+		var req LoginPayload
 
 		if err := c.ShouldBindJSON(&req); err != nil {
 			response.Error(c, http.StatusBadRequest, "Invalid request payload")
@@ -105,12 +118,22 @@ func LoginHandler(service *Service) gin.HandlerFunc {
 
 }
 
+// RefreshTokenHandler
+// @Summary Refresh access token
+// @Description Provide a valid refresh token to get new access and refresh tokens
+// @Tags Authentication
+// @Accept json
+// @Produce json
+// @Param data body RefreshTokenPayload true "Refresh token data"
+// @Success 200 {object} response.APIResponse
+// @Failure 400 {object} response.APIResponse "Invalid input"
+// @Failure 401 {object} response.APIResponse "Unauthorized or expired token"
+// @Failure 500 {object} response.APIResponse "Internal server error"
+// @Router /api/v1/refresh [post]
 func RefreshTokenHandler(service *Service) gin.HandlerFunc {
 
 	return func(c *gin.Context) {
-		var req struct {
-			RefreshToken string `json:"refresh_token"`
-		}
+		var req RefreshTokenPayload
 
 		if err := c.ShouldBindJSON(&req); err != nil {
 			response.Error(c, http.StatusBadRequest, "Invalid request payload")
@@ -155,16 +178,27 @@ func RefreshTokenHandler(service *Service) gin.HandlerFunc {
 
 }
 
+// LogoutHandler
+// @Summary Logout user
+// @Description Logs out the currently authenticated user by removing their refresh token
+// @Tags Authentication
+// @Security BearerAuth
+// @Produce json
+// @Success 200 {object} response.APIResponse
+// @Failure 401 {object} response.APIResponse "Unauthorized"
+// @Failure 500 {object} response.APIResponse "Internal server error"
+// @Router /api/v1/user/logout [get]
 func LogoutHandler(service *Service) gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 		userID, exists := c.Get("userID")
-		if !exists {
+        if !exists {
 			response.Error(c, http.StatusUnauthorized, "User ID not found in context")
-			return
-		}
+            return
+        }
 
-		err := service.DeleteRefreshTokenByUserID(context.Background(), userID.(int32))
+		id := int(userID.(int64))
+		err := service.DeleteRefreshTokenByUserID(context.Background(), int32(id))
 		if err != nil {
 			status, msg := response.ParseDBError(c, err)
 			response.Error(c, status, msg)

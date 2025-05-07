@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AuthMiddleware() gin.HandlerFunc {
+func AuthMiddleware(service *Service) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenString := c.GetHeader("Authorization")
 		if tokenString == "" {
@@ -25,6 +25,14 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
+		id := int(userID)
+		valid, err := service.IsRefreshTokenValid(c, int32(id))
+		if err != nil || !valid {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Refresh token is revoked or expired!"})
+			c.Abort()
+			return
+		}
+		
 		c.Set("userID", userID)
 		c.Set("isAdmin", isAdmin)
 		c.Next()

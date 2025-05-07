@@ -85,8 +85,13 @@ func (s *Service) SaveRefreshToken(ctx context.Context, payload struct {
 		ExpiresAt: 	payload.ExpiresAt,
 	}
 
-	_, err := s.db.CreateRefreshToken(context.Background(), params)
-	return err
+	err := s.db.RevokeRefreshToken(ctx, payload.UserID)
+	if err != nil {
+		return err
+	}
+
+	_, createErr := s.db.CreateRefreshToken(context.Background(), params)
+	return createErr
 
 }
 
@@ -102,7 +107,18 @@ func (s *Service) FindRefreshToken(ctx context.Context, tokenHash string) (*db.R
 
 func (s *Service) DeleteRefreshTokenByUserID(ctx context.Context, userID int32) error {
 
-	err := s.db.RevokeRefreshToken(ctx, int32(userID))
+	err := s.db.RevokeRefreshToken(ctx, userID)
 	return err
+
+}
+
+func (s *Service) IsRefreshTokenValid(ctx context.Context, userID int32) (bool, error) {
+
+	refresh, err := s.db.IsRefreshTokenValid(ctx, userID)
+	if err != nil {
+		return false, err
+	}
+
+	return refresh, nil
 
 }

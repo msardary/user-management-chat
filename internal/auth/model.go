@@ -24,3 +24,21 @@ type RefreshToken struct {
     Revoked    bool
     CreatedAt  time.Time
 }
+
+type RegisterPayload struct {
+    Username	string `validate:"required" json:"username"`
+    Email    	string `validate:"required,email" json:"email"`
+    Password 	string `validate:"required" json:"password"`
+    FirstName 	*string `json:"first_name"`
+    LastName 	*string `json:"last_name"`
+    Mobile 		*string `json:"mobile_number"`
+}
+
+type LoginPayload struct {
+    Username    string `validate:"required" json:"username"`
+    Password 	string `validate:"required" json:"password"`
+}
+
+type RefreshTokenPayload struct {
+    RefreshToken string `validate:"required" json:"refresh_token"`
+}

@@ -7,4 +7,11 @@ RETURNING *;
 SELECT * FROM refresh_tokens WHERE token_hash = $1 AND revoked = false;
 
 -- name: RevokeRefreshToken :exec
-UPDATE refresh_tokens SET revoked = true WHERE user_id = $1;
+UPDATE refresh_tokens SET revoked = true WHERE user_id = $1 AND revoked = false;
+
+-- name: IsRefreshTokenValid :one
+SELECT EXISTS (
+  SELECT 1
+  FROM refresh_tokens
+  WHERE user_id = $1 AND revoked = false AND expires_at > NOW()
+);

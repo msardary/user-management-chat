@@ -20,6 +20,12 @@ type UsersList struct {
 	IsAdmin    	bool	`json:"is_admin"`
 }
 
+type UpdateMyProfile struct {
+	Fname    		*string `json:"fname"`
+	Lname    		*string `json:"lname"`
+	MobileNumber    *string `json:"mobile_number"`
+}
+
 type UpdateUser struct {
 	Fname    		*string `json:"fname"`
 	Lname    		*string `json:"lname"`

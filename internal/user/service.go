@@ -46,6 +46,16 @@ func (s *Service) GetUserByID(ctx context.Context, id int) (*UsersList, error) {
 
 }
 
+func (s *Service) UpdateUserSelf(ctx context.Context, id int, payload UpdateMyProfile) error {
+
+	userData := UpdateUser{
+		Fname: payload.Fname,
+		Lname: payload.Lname,
+		MobileNumber: payload.MobileNumber,
+	}
+	return s.UpdateUser(ctx, id, userData)
+	
+}
 
 func (s *Service) UpdateUser(ctx context.Context, id int, payload UpdateUser) error {
 
@@ -96,7 +106,6 @@ func (s *Service) UpdateUser(ctx context.Context, id int, payload UpdateUser) er
 	return nil
 
 }
-
 
 func (s *Service) DeleteUser(id int) error {
 
