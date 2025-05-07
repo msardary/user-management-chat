@@ -5,6 +5,8 @@ WORKDIR /app
 
 # RUN go install github.com/kyleconroy/sqlc/cmd/sqlc@v1.16.0
 
+ENV GOPROXY=direct
+
 COPY go.mod go.sum ./
 RUN go mod download
 
