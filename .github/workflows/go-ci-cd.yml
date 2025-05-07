@@ -61,6 +61,6 @@ jobs:
             docker compose up --build -d
           port: 22
           timeout: 30s
-          command_timeout: 10m
+          command_timeout: 5m
           debug: true
           request_pty: true
