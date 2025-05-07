@@ -34,13 +34,13 @@ jobs:
       - name: Install dependencies
         run: go mod download
 
-      - name: Run sqlc generate
+      - name: Install sqlc
         run: |
           curl -sSL https://github.com/kyleconroy/sqlc/releases/download/v1.16.0/sqlc_1.16.0_linux_amd64.tar.gz | tar -xz -C /usr/local/bin
-          sqlc generate --file internal/db/sqlc.yaml
 
-      - name: Build
-        run: go build -v ./cmd/app
+      - name: Run sqlc generate
+        run: |
+          sqlc generate --file internal/db/sqlc.yaml
 
   deploy:
     runs-on: ubuntu-latest
@@ -56,7 +56,5 @@ jobs:
           script: |
             cd /home/go/user-management-chat
             git pull origin main
-            curl -sSL https://github.com/kyleconroy/sqlc/releases/download/v1.16.0/sqlc_1.16.0_linux_amd64.tar.gz | tar -xz -C /usr/local/bin
-            sqlc generate --file internal/db/sqlc.yaml
-            go build -o app ./cmd/app
-            sudo systemctl restart user-management
+            docker compose down
+            docker compose up --build -d
