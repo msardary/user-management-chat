@@ -3,20 +3,12 @@ FROM golang:1.24 AS builder
 
 WORKDIR /app
 
-# RUN go install github.com/kyleconroy/sqlc/cmd/sqlc@v1.16.0
-
 ENV GOPROXY=direct
 
 COPY go.mod go.sum ./
 RUN go mod download
 
 COPY . .
-
-# COPY internal/db/sqlc.yaml /app/sqlc.yaml
-
-# RUN sqlc version
-
-# RUN sqlc generate
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o /app/app ./cmd/app
 
