@@ -53,7 +53,7 @@ func (s *Service) Register(ctx context.Context, payload struct {
 
 }
 
-func (s *Service) GetUserByUsername(ctx context.Context, username string) (*db.User, error) {
+func (s *Service) GetUserByUsername(ctx context.Context, username string) (*db.Users, error) {
 
 	user, err := s.db.GetUserByUsername(ctx, username)
 	if err != nil {
@@ -63,7 +63,7 @@ func (s *Service) GetUserByUsername(ctx context.Context, username string) (*db.U
 
 }
 
-func (s *Service) GetUserByID(ctx context.Context, id int) (*db.User, error) {
+func (s *Service) GetUserByID(ctx context.Context, id int) (*db.Users, error) {
 
 	user, err := s.db.GetUserByID(ctx, int32(id))
 	if err != nil {
@@ -90,7 +90,7 @@ func (s *Service) SaveRefreshToken(ctx context.Context, payload struct {
 
 }
 
-func (s *Service) FindRefreshToken(ctx context.Context, tokenHash string) (*db.RefreshToken, error) {
+func (s *Service) FindRefreshToken(ctx context.Context, tokenHash string) (*db.RefreshTokens, error) {
 
 	refresh, err := s.db.GetRefreshToken(ctx, tokenHash)
 	if err != nil {
