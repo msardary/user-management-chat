@@ -16,6 +16,7 @@ var (
 	JWTRefreshSecret 	string
 	RedisURL          	string
 	Production         	bool
+	LogPath         	string
 )
 
 var once     sync.Once
@@ -31,6 +32,7 @@ func LoadConfig() {
 		Port= 				getEnv("PORT", "8080")
 		RedisURL= 			getEnv("REDIS_URL", "redis:6379")
 		Production= 		getEnv("PRODUCTION", "false") == "true"
+		LogPath= 			getEnv("LOG_PATH", "/logs")
 	})
 
 }

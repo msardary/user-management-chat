@@ -20,13 +20,6 @@ services:
     depends_on:
       - db
       - redis
-    environment:
-      DATABASE_URL: postgres://postgres:123@db:5432/userm?sslmode=disable
-      JWT_ACCESS_SECRET: mysecret
-      JWT_REFRESH_SECRET: mysecretrefresh
-      PORT: 8080
-      LOG_PATH: /logs
-      REDIS_URL: redis:6379
     ports:
       - "8085:8080"
     volumes:

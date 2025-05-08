@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"github.com/redis/go-redis/v9"
 	"github.com/sirupsen/logrus"
@@ -38,7 +39,7 @@ func (r *MessageCache) CacheMessage(ctx context.Context, userID int32, message I
 	pipe.LPush(ctx, key, data)
 	pipe.LTrim(ctx, key, 0, 49)
 	
-	pipe.Expire(ctx, key, 72*60*60) // Set expiration to 3 days
+	pipe.Expire(ctx, key, 72*time.Hour) // Set expiration to 3 days
 
 	_, err = pipe.Exec(ctx)
 	if err != nil {

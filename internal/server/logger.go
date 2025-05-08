@@ -3,12 +3,13 @@ package server
 import (
 	"os"
 	"time"
+	"user-management/internal/config"
 
 	log "github.com/sirupsen/logrus"
 )
 
 func SetupLogger() {
-	logDir := "/logs"
+	logDir := config.LogPath
 	logFile := logDir + "/app.log"
 
 	if _, err := os.Stat(logDir); os.IsNotExist(err) {
