@@ -8,8 +8,8 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
-var accessSecretKey = []byte(config.JWT_ACCESS_SECRET)
-var refreshSecretKey = []byte(config.JWT_REFRESH_SECRET)
+var accessSecretKey = []byte(config.JWTAccessSecret)
+var refreshSecretKey = []byte(config.JWTRefreshSecret)
 
 func GenerateAccessToken(userID int32, username string, isAdmin bool) (string, error) {
 

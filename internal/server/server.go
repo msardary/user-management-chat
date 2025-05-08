@@ -20,7 +20,7 @@ func Start(pool *db.Queries) error {
 		log.Fatal("Failed to initialize validator: ", err)
 	}
 
-	rdb := redisx.NewClient(config.REDIS_URL, "", 0)
+	rdb := redisx.NewClient(config.RedisURL, "", 0)
 	cache := redisx.NewMessageCache(rdb)
 
 	authService := auth.NewService(pool)
@@ -29,7 +29,7 @@ func Start(pool *db.Queries) error {
 
 	router := SetupRouter(authService, userService, chatService, rdb)
 
-	port := config.PORT
+	port := config.Port
 	if port == "" {
 		port = "8080"
 	}

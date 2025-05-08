@@ -36,7 +36,7 @@ func SetupRouter(authService *auth.Service, userService *user.Service, chatServi
 
 	r.GET("/health", healthHandler.HealthCheck)
 
-	if !config.PRODUCTION {
+	if !config.Production {
 		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	}
 

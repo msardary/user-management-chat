@@ -13,7 +13,7 @@ var pool *pgxpool.Pool
 
 func Connect() (*pgxpool.Pool, error) {
 
-	pool, err := pgxpool.New(context.Background(), config.DB_URL)
+	pool, err := pgxpool.New(context.Background(), config.DBUrl)
 	if err != nil {
 		log.Fatal("Failed to create connection pool:", err)
 	}
