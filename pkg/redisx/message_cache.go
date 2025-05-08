@@ -2,10 +2,11 @@ package redisx
 
 import (
 	"context"
-	"fmt"
 	"encoding/json"
+	"fmt"
 
 	"github.com/redis/go-redis/v9"
+	"github.com/sirupsen/logrus"
 )
 
 type MessageCache struct {
@@ -25,6 +26,7 @@ func NewMessageCache(redisClient *redis.Client) *MessageCache {
 }
 
 func (r *MessageCache) CacheMessage(ctx context.Context, userID int32, message IncomingMessage) error {
+	
 	key := fmt.Sprintf("user:messages:%d", userID)
 
 	data, err := json.Marshal(message)
@@ -39,6 +41,9 @@ func (r *MessageCache) CacheMessage(ctx context.Context, userID int32, message I
 	pipe.Expire(ctx, key, 72*60*60) // Set expiration to 3 days
 
 	_, err = pipe.Exec(ctx)
+	if err != nil {
+		logrus.WithField("key", key).Error("Error executing Redis pipeline: ", err)
+	}
 	return err
 }
 

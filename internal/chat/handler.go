@@ -27,7 +27,7 @@ var upgrader = websocket.Upgrader{
 // @Success     101 {string} string "WebSocket upgrade successful"
 // @Failure     401 {object} map[string]string "Unauthorized"
 // @Failure     500 {object} map[string]string "Internal Server Error"
-// @Router      /ws/chat [get]
+// @Router      /api/v1/chat/ws [get]
 func ChatHandler(service *Service) gin.HandlerFunc {
 
 	return func(c *gin.Context) {
