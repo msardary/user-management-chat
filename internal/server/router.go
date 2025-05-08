@@ -45,15 +45,20 @@ func SetupRouter(authService *auth.Service, userService *user.Service, chatServi
 		api.POST("/register", auth.RegisterHandler(authService))
 		api.POST("/login", auth.LoginHandler(authService))
 		api.POST("/refresh", auth.RefreshTokenHandler(authService))
-
+		
 		api.GET("/chat/ws", chat.ChatHandler(chatService))
+
 	}
 
-	authGroup := r.Group("/api/v1/user", auth.AuthMiddleware(authService))
+	authGroup := r.Group("/api/v1", auth.AuthMiddleware(authService))
 	{
-		authGroup.GET("/", user.GetProfileHandler(userService))
-		authGroup.PUT("/", user.UpdateMyProfileHandler(userService))
-		authGroup.GET("/logout", auth.LogoutHandler(authService))
+
+		usersGroup := authGroup.Group("/user")
+		{
+			usersGroup.GET("/", user.GetProfileHandler(userService))
+			usersGroup.PUT("/", user.UpdateMyProfileHandler(userService))
+			usersGroup.GET("/logout", auth.LogoutHandler(authService))
+		}
 	}
 
 	adminGroup := r.Group("/admin/api/v1", auth.AuthMiddleware(authService), auth.AdminMiddleware())

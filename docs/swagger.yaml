@@ -67,7 +67,7 @@ definitions:
       total_pages:
         type: integer
     type: object
-host: localhost:8080
+host: 91.107.176.236:8085
 info:
   contact: {}
   description: This is a user management service and chat
@@ -346,6 +346,38 @@ paths:
       summary: Logout user
       tags:
       - Authentication
+  /ws/chat:
+    get:
+      description: Connects to WebSocket server for real-time messaging. Token must
+        be passed in query param. This is a WebSocket endpoint.
+      parameters:
+      - description: Access token
+        in: query
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "101":
+          description: WebSocket upgrade successful
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: WebSocket chat connection
+      tags:
+      - chat
 securityDefinitions:
   BearerAuth:
     in: header

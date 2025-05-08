@@ -1,7 +1,7 @@
 // @title User Management API
 // @version 1.0
 // @description This is a user management service and chat
-// @host localhost:8080
+// @host 91.107.176.236:8085
 // @securityDefinitions.apikey BearerAuth
 // @in header
 // @name Authorization

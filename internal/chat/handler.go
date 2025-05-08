@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 	"net/http"
-	"strconv"
+	"user-management/pkg/utils"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
@@ -17,9 +17,36 @@ var upgrader = websocket.Upgrader{
 	CheckOrigin: func(r *http.Request) bool { return true },
 }
 
+// ChatHandler handles WebSocket connections for real-time chat.
+//
+// @Summary     WebSocket chat connection
+// @Description Connects to WebSocket server for real-time messaging. Token must be passed in query param. This is a WebSocket endpoint.
+// @Tags        chat
+// @Produce     json
+// @Param       token query string true "Access token"
+// @Success     101 {string} string "WebSocket upgrade successful"
+// @Failure     401 {object} map[string]string "Unauthorized"
+// @Failure     500 {object} map[string]string "Internal Server Error"
+// @Router      /ws/chat [get]
 func ChatHandler(service *Service) gin.HandlerFunc {
 
 	return func(c *gin.Context) {
+
+		tokenString := c.DefaultQuery("token", "")
+        if tokenString == "" {
+            c.JSON(http.StatusUnauthorized, gin.H{"error": "Token is required in URL!"})
+            return
+        }
+
+		userID, isAdmin, err := utils.ValidateAccessToken(tokenString)
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Token is not invalid!"})
+			return
+		}
+
+		c.Set("userID", userID)
+        c.Set("isAdmin", isAdmin)
+
 		conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
 		if err != nil {
 			logger.WithFields(logrus.Fields{
@@ -32,28 +59,8 @@ func ChatHandler(service *Service) gin.HandlerFunc {
 		}
 		defer conn.Close()
 
-		userIDStr := c.Query("user_id")
-
-		logger.WithFields(logrus.Fields{
-			"path":   c.Request.URL.Path,
-			"method": c.Request.Method,
-			"ip":     c.ClientIP(),
-		}).Info("userIDStr: ", userIDStr)
-
-		userID, err := strconv.Atoi(userIDStr)
-		if err != nil {
-			logger.WithFields(logrus.Fields{
-				"path":   c.Request.URL.Path,
-				"method": c.Request.Method,
-				"ip":     c.ClientIP(),
-			}).Error("error query: ", err)
-			log.Println("error query: ", err)
-			return
-		}
-
-		service.AddClient(userID, conn)
-		defer service.RemoveClient(userID)
-		log.Println("Client connected:", userID)
+		service.AddClient(int(userID), conn)
+		defer service.RemoveClient(int(userID))
 
 		// undeliveredMsgs, _ := service.GetUndeliveredMessages(context.Background(), int32(userID))
 		// for _, message := range undeliveredMsgs {
@@ -106,8 +113,8 @@ func ChatHandler(service *Service) gin.HandlerFunc {
 				break
 			}
 
-			saveMessageParams := IncomingMessage{
-				SenderID:   msg.SenderID,
+			saveMessageParams := SaveMessageParams{
+				SenderID:   int32(userID),
 				ReceiverID: msg.ReceiverID,
 				Content:    msg.Content,
 			}

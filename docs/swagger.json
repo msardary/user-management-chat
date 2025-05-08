@@ -6,7 +6,7 @@
         "contact": {},
         "version": "1.0"
     },
-    "host": "localhost:8080",
+    "host": "91.107.176.236:8085",
     "paths": {
         "/admin/api/v1/users": {
             "get": {
@@ -427,6 +427,53 @@
                         "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/user-management_pkg_response.APIResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/ws/chat": {
+            "get": {
+                "description": "Connects to WebSocket server for real-time messaging. Token must be passed in query param. This is a WebSocket endpoint.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "chat"
+                ],
+                "summary": "WebSocket chat connection",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Access token",
+                        "name": "token",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "101": {
+                        "description": "WebSocket upgrade successful",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
